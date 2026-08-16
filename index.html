@@ -80,8 +80,8 @@
   .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--red);
     box-shadow:0 0 10px var(--red);animation:pulse 2.4s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  .hero-icon{width:118px;height:118px;border-radius:27px;margin:30px auto 4px;display:block;
-    box-shadow:0 24px 70px rgba(232,0,45,.4),0 0 0 1px rgba(255,255,255,.08);animation:float 6s ease-in-out infinite}
+  .hero-word{width:min(580px,88vw);height:auto;margin:28px auto 4px;display:block;
+    filter:drop-shadow(0 12px 46px rgba(232,0,45,.42));animation:float 6s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
   h1{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:1.05;
     font-size:clamp(38px,7vw,74px);margin:22px auto 0;max-width:15ch}
@@ -205,7 +205,7 @@
 <div id="top" class="wrap">
 <section class="hero">
   <span class="pill"><span class="dot"></span>Independent Formula 1 companion · iOS</span>
-  <img class="hero-icon" src="assets/icon.png" alt="FlatOut app icon">
+  <img class="hero-word" src="assets/wordmark.png" alt="FlatOut · Race Hub">
   <h1>Follow every session — <span class="grad">without the spoilers.</span></h1>
   <p class="sub">FlatOut tracks the whole Formula 1 weekend in your time zone — practice, qualifying, sprint and race — with standings, in-house circuit maps and weekend ratings. Plus a spoiler-free mode built to actually keep results hidden until you're ready.</p>
   <div class="cta" id="get">
