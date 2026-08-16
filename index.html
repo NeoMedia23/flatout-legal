@@ -1,22 +1,380 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FlatOut</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-      font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:#14161c; background:#f7f7f8; text-align:center; padding:24px; }
-    @media (prefers-color-scheme: dark){ body{ color:#e9eaee; background:#0b0d12; } }
-    h1 { font-size:34px; letter-spacing:-0.02em; margin:0; }
-    p { color:#8a8f99; margin:0; }
-    a { color:#e8002d; font-weight:600; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlatOut — the independent Formula 1 companion</title>
+<meta name="description" content="FlatOut is an independent Formula 1 companion app for iOS. Every session in your time zone, standings, in-house circuit maps, weekend ratings — and a spoiler-free mode that actually works.">
+<meta name="theme-color" content="#08060c">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<meta property="og:title" content="FlatOut — Race Hub">
+<meta property="og:description" content="The independent Formula 1 companion. Spoiler-free that actually works.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#e8002d; --red-hi:#ff2f52; --navy:#0a1836;
+    --bg:#05060a; --text:#eef0f5; --dim:#9aa1b0; --dim-2:#6e7484;
+    --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.09);
+    --brd:rgba(255,255,255,.12); --brd-hi:rgba(255,255,255,.22);
+    --shadow:0 20px 60px rgba(0,0,0,.55);
+    --disp:'Poppins',system-ui,sans-serif;
+    --sans:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font:400 17px/1.65 var(--sans);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+  /* signature red→black→navy field + soft light orbs behind the glass */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(120% 90% at 8% 0%, rgba(232,0,45,.28), transparent 55%),
+      radial-gradient(120% 90% at 100% 100%, rgba(20,52,120,.42), transparent 55%),
+      linear-gradient(150deg,#1c0510 0%, #08060c 42%, #070a16 70%, #0a1330 100%)}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(40% 30% at 78% 18%, rgba(255,47,82,.14), transparent 70%),
+      radial-gradient(45% 34% at 15% 82%, rgba(43,86,180,.18), transparent 70%)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1160px;margin:0 auto;padding-inline:24px}
+  .accent{color:var(--red-hi)}
+
+  /* ── glass primitive ─────────────────────────────────────────── */
+  .glass{background:var(--glass);backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid var(--brd);border-radius:24px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden}
+  .glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 32%);
+    -webkit-mask:linear-gradient(#000,transparent 40%);mask:linear-gradient(#000,transparent 40%);opacity:.7}
+
+  /* ── nav ─────────────────────────────────────────────────────── */
+  header{position:sticky;top:14px;z-index:50;margin-top:14px}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;
+    padding:10px 12px 10px 16px;border-radius:20px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;font-size:15px}
+  .brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 4px 16px rgba(232,0,45,.35)}
+  nav.links{display:flex;gap:28px}
+  nav.links a{font-size:13px;font-weight:500;color:var(--dim);letter-spacing:.02em;transition:color .2s}
+  nav.links a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:600;
+    font-size:13.5px;letter-spacing:.02em;padding:11px 20px;border-radius:13px;cursor:pointer;
+    border:1px solid transparent;transition:transform .18s,box-shadow .18s,background .2s}
+  .btn-primary{background:linear-gradient(180deg,var(--red-hi),var(--red));color:#fff;
+    box-shadow:0 8px 24px rgba(232,0,45,.4),inset 0 1px 0 rgba(255,255,255,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,0,45,.55),inset 0 1px 0 rgba(255,255,255,.35)}
+  .btn-ghost{background:var(--glass-2);border-color:var(--brd);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--brd-hi);transform:translateY(-2px)}
+  .nav .btn{padding:10px 18px}
+  @media(max-width:820px){nav.links{display:none}}
+
+  /* ── hero ────────────────────────────────────────────────────── */
+  .hero{text-align:center;padding-block:76px 40px}
+  .pill{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:100px;
+    font-family:var(--disp);font-weight:600;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--dim);background:var(--glass);border:1px solid var(--brd)}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--red);
+    box-shadow:0 0 10px var(--red);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .hero-icon{width:118px;height:118px;border-radius:27px;margin:30px auto 4px;display:block;
+    box-shadow:0 24px 70px rgba(232,0,45,.4),0 0 0 1px rgba(255,255,255,.08);animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  h1{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:1.05;
+    font-size:clamp(38px,7vw,74px);margin:22px auto 0;max-width:15ch}
+  h1 .grad{background:linear-gradient(120deg,#fff 30%,#ffb3c0 70%,var(--red-hi));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p.sub{max-width:60ch;margin:22px auto 0;color:var(--dim);font-size:clamp(16px,2vw,19px)}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .cta .btn{padding:15px 26px;font-size:15px}
+  .store-note{margin-top:16px;font-size:12.5px;color:var(--dim-2);letter-spacing:.04em}
+
+  /* ── section scaffolding ─────────────────────────────────────── */
+  section{padding-block:70px;position:relative}
+  .eyebrow{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--red-hi)}
+  h2{font-family:var(--disp);font-weight:700;letter-spacing:-.01em;line-height:1.1;
+    font-size:clamp(28px,4vw,44px);margin:12px 0 0}
+  .lead{color:var(--dim);max-width:56ch;margin-top:14px;font-size:18px}
+  .center{text-align:center;margin-inline:auto}
+
+  /* ── features ────────────────────────────────────────────────── */
+  .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+  .card{padding:28px;border-radius:22px}
+  .card .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;margin-bottom:18px;
+    background:linear-gradient(180deg,rgba(232,0,45,.22),rgba(232,0,45,.08));border:1px solid rgba(232,0,45,.3);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+  .card .ic svg{width:24px;height:24px;stroke:var(--red-hi);fill:none;stroke-width:1.9}
+  .card h3{font-family:var(--disp);font-weight:600;font-size:19px;margin-bottom:8px}
+  .card p{color:var(--dim);font-size:15px;line-height:1.6}
+  .card.tall{grid-row:span 1}
+  .card:hover{transform:translateY(-4px);border-color:rgba(232,0,45,.45);
+    box-shadow:var(--shadow),0 0 40px rgba(232,0,45,.18);transition:transform .25s,box-shadow .25s,border-color .25s}
+  @media(max-width:900px){.feat{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.feat{grid-template-columns:1fr}}
+
+  /* ── spoiler highlight ───────────────────────────────────────── */
+  .spoiler{padding:48px;border-radius:30px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;
+    background:linear-gradient(135deg,rgba(232,0,45,.14),rgba(255,255,255,.05) 55%)}
+  .spoiler h2{font-size:clamp(26px,3.4vw,40px)}
+  .spoiler p{color:var(--dim);margin-top:16px;font-size:17px}
+  .spoiler ul{list-style:none;margin-top:20px;display:grid;gap:12px}
+  .spoiler li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#d6d9e2}
+  .spoiler li b{color:#fff;font-weight:600}
+  .chk{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;margin-top:1px;
+    background:var(--red);box-shadow:0 4px 12px rgba(232,0,45,.5)}
+  .chk svg{width:13px;height:13px;stroke:#fff;stroke-width:2.6;fill:none}
+  .shield{display:grid;place-items:center}
+  .shield .g{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;
+    background:radial-gradient(circle,rgba(232,0,45,.35),transparent 70%)}
+  .shield svg{width:110px;height:110px;stroke:var(--red-hi);fill:rgba(232,0,45,.1);stroke-width:1.4;
+    filter:drop-shadow(0 0 20px rgba(232,0,45,.5))}
+  @media(max-width:760px){.spoiler{grid-template-columns:1fr;padding:34px}.shield{order:-1}}
+
+  /* ── screenshots ─────────────────────────────────────────────── */
+  .shots{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+  .phone{width:236px;aspect-ratio:9/19.5;border-radius:38px;padding:9px;flex:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+    border:1px solid var(--brd-hi);box-shadow:var(--shadow)}
+  .phone .screen{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;
+    background:linear-gradient(160deg,#1c0510,#070a16 60%,#0a1330);display:grid;place-items:center;text-align:center}
+  .phone .screen .ph{color:var(--dim-2);font-family:var(--disp);font-weight:600;font-size:11px;
+    letter-spacing:.18em;text-transform:uppercase}
+  .phone .screen img.mini{width:52px;height:52px;border-radius:13px;opacity:.55;margin-bottom:12px}
+  .phone .screen>img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+  .phone-fig{display:flex;flex-direction:column;align-items:center;gap:14px;margin:0}
+  .phone-fig figcaption{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  @media(max-width:520px){.phone{width:200px}}
+
+  /* ── split feature spotlight ─────────────────────────────────── */
+  .split{display:grid;grid-template-columns:1fr 1.1fr;gap:46px;align-items:center;padding:44px;border-radius:30px}
+  .split .phone{width:212px}
+  .split h2{font-size:clamp(26px,3.4vw,40px)}
+  .split p{color:var(--dim);margin-top:16px;font-size:17px}
+  .split.rev{grid-template-columns:1.1fr 1fr}
+  @media(max-width:760px){.split,.split.rev{grid-template-columns:1fr;text-align:center;padding:34px}.split .phone{margin:0 auto}}
+
+  /* ── pricing ─────────────────────────────────────────────────── */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+  .tier{padding:30px 26px;border-radius:22px;text-align:center}
+  .tier.best{border-color:rgba(232,0,45,.5);box-shadow:var(--shadow),0 0 44px rgba(232,0,45,.22)}
+  .tier .tag{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .tier .badge{display:inline-block;font-family:var(--disp);font-weight:700;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:#fff;background:var(--red);padding:4px 11px;border-radius:100px;margin-bottom:14px}
+  .tier .price{font-family:var(--disp);font-weight:800;font-size:44px;margin:8px 0 2px;letter-spacing:-.02em}
+  .tier .per{color:var(--dim);font-size:14px}
+  .tier .desc{color:var(--dim);font-size:14px;margin-top:14px;min-height:40px}
+  @media(max-width:760px){.tiers{grid-template-columns:1fr}}
+
+  /* ── faq ─────────────────────────────────────────────────────── */
+  .faq{max-width:820px;margin:44px auto 0;display:grid;gap:14px}
+  .qa{border-radius:18px;padding:22px 26px}
+  .qa h4{font-family:var(--disp);font-weight:600;font-size:17px;margin-bottom:8px}
+  .qa p{color:var(--dim);font-size:15px}
+
+  /* ── footer ──────────────────────────────────────────────────── */
+  footer{margin-top:40px;padding-block:40px 60px;border-top:1px solid var(--brd)}
+  .foot-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .foot-brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:14px}
+  .foot-brand img{width:30px;height:30px;border-radius:8px}
+  .foot-links{display:flex;gap:26px;font-size:13px;color:var(--dim)}
+  .foot-links a:hover{color:var(--text)}
+  .disc{margin-top:26px;color:var(--dim-2);font-size:12px;line-height:1.7;max-width:80ch}
+  .copyr{margin-top:16px;color:var(--dim-2);font-size:12px}
+</style>
 </head>
 <body>
-  <h1>FlatOut</h1>
-  <p>An independent, unofficial F1 companion app.</p>
-  <p><a href="/privacy/">Privacy Policy</a></p>
+
+<div class="wrap">
+<header>
+  <div class="nav glass">
+    <a class="brand" href="#top"><img src="assets/icon.png" alt="FlatOut">FlatOut</a>
+    <nav class="links">
+      <a href="#features">Features</a>
+      <a href="#spoiler">Spoiler-free</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary" href="mailto:support@flatoutapp.app?subject=Notify%20me%20when%20FlatOut%20launches">Notify me</a>
+  </div>
+</header>
+</div>
+
+<div id="top" class="wrap">
+<section class="hero">
+  <span class="pill"><span class="dot"></span>Independent Formula 1 companion · iOS</span>
+  <img class="hero-icon" src="assets/icon.png" alt="FlatOut app icon">
+  <h1>Follow every session — <span class="grad">without the spoilers.</span></h1>
+  <p class="sub">FlatOut tracks the whole Formula 1 weekend in your time zone — practice, qualifying, sprint and race — with standings, in-house circuit maps and weekend ratings. Plus a spoiler-free mode built to actually keep results hidden until you're ready.</p>
+  <div class="cta" id="get">
+    <a class="btn btn-primary" href="mailto:support@flatoutapp.app?subject=Notify%20me%20when%20FlatOut%20launches">Notify me at launch</a>
+    <a class="btn btn-ghost" href="#features">Explore features</a>
+  </div>
+  <p class="store-note">Coming soon to the App Store · iOS first, Android to follow</p>
+</section>
+</div>
+
+<div class="wrap">
+<section id="features">
+  <div class="center" style="max-width:640px">
+    <div class="eyebrow">The race hub</div>
+    <h2>Everything about the weekend, in one place.</h2>
+    <p class="lead center">Built by a fan who wanted a companion that respects your time — and your timeline.</p>
+  </div>
+  <div class="feat">
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div>
+      <h3>Full weekend calendar</h3>
+      <p>Every session from FP1 to the flag, converted to your local time — with a live badge when the weekend is underway.</p>
+    </div>
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+      <h3>Standings, always current</h3>
+      <p>Driver and constructor tables that update through the season, so you always know where the fight stands.</p>
+    </div>
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/><path d="M9 3v15M15 6v15"/></svg></div>
+      <h3>Circuit maps, in-house</h3>
+      <p>Every track hand-traced with sectors and the start-finish line — drawn by us, not licensed clip-art.</p>
+    </div>
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7a11 11 0 0 1-5-1.2"/><path d="M3 3l18 18"/></svg></div>
+      <h3>Spoiler-free mode</h3>
+      <p>Hide results, times and standings until you've watched. A shield that actually holds across every screen.</p>
+    </div>
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8L4.5 9.2l5.9-.9z"/></svg></div>
+      <h3>Rate the weekend</h3>
+      <p>Score the race, the drivers and the teams — your own running record of the season, weekend by weekend.</p>
+    </div>
+    <div class="card glass">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></div>
+      <h3>Home-screen widgets</h3>
+      <p>The next session and the current standings, one glance away — right on your Home Screen.</p>
+    </div>
+  </div>
+</section>
+
+<section id="spoiler">
+  <div class="spoiler glass">
+    <div>
+      <div class="eyebrow">Spoiler-free</div>
+      <h2>Spoiler protection that actually works.</h2>
+      <p>Most apps "hide" results and then leak them in a notification, a widget, or a stray standings number. FlatOut treats spoilers as a first-class problem — one switch, and the whole app keeps the weekend a secret until you say go.</p>
+      <ul>
+        <li><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><span><b>App-wide shield</b> — results, times and standings all stay hidden, not just the headline.</span></li>
+        <li><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><span><b>Spoiler-safe notifications</b> — reminders that never give the result away.</span></li>
+        <li><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><span><b>Reveal on your schedule</b> — flip it off the moment you've watched.</span></li>
+      </ul>
+    </div>
+    <div class="shield">
+      <div class="g"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3Z"/><path d="M9 12l2 2 4-4"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="center" style="max-width:640px">
+    <div class="eyebrow">A look inside</div>
+    <h2>Designed to disappear into the weekend.</h2>
+    <p class="lead center">Clean, fast, and quiet — the app gets out of the way so the racing doesn't.</p>
+  </div>
+  <div class="shots">
+    <figure class="phone-fig"><div class="phone"><div class="screen"><img src="assets/screen-schedule.jpg" alt="FlatOut schedule — every session in your time zone"></div></div><figcaption>Schedule</figcaption></figure>
+    <figure class="phone-fig"><div class="phone"><div class="screen"><img src="assets/screen-standings.jpg" alt="FlatOut driver standings"></div></div><figcaption>Standings</figcaption></figure>
+    <figure class="phone-fig"><div class="phone"><div class="screen"><img src="assets/screen-widgets.jpg" alt="FlatOut home-screen widgets"></div></div><figcaption>Widgets</figcaption></figure>
+  </div>
+</section>
+
+<section id="maps">
+  <div class="split glass" style="background:linear-gradient(135deg,rgba(232,0,45,.10),rgba(20,52,120,.16) 60%)">
+    <div style="display:grid;place-items:center">
+      <div class="phone"><div class="screen"><img src="assets/screen-circuit.jpg" alt="FlatOut circuit map — Shanghai, colour-coded by sector"></div></div>
+    </div>
+    <div>
+      <div class="eyebrow">Circuit maps</div>
+      <h2>Every track, traced in-house.</h2>
+      <p>No licensed clip-art. Each circuit is hand-drawn with colour-coded sectors, the start-finish line and every numbered corner — pinch to zoom, tap a corner, and read the length, lap record and tyre compounds for the weekend.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ratings">
+  <div class="split rev glass" style="background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(232,0,45,.13) 65%)">
+    <div>
+      <div class="eyebrow">Ratings</div>
+      <h2>Score every weekend.</h2>
+      <p>Rate the race, the drivers and the teams the moment the flag drops, and build your own running record of the season. Full session results sit right alongside — gap and points, one tap from the schedule.</p>
+    </div>
+    <div style="display:grid;place-items:center">
+      <div class="phone"><div class="screen"><img src="assets/screen-weekend.jpg" alt="FlatOut — rate the weekend, with session results"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="center" style="max-width:640px">
+    <div class="eyebrow">Pricing</div>
+    <h2>One app. Pick your pace.</h2>
+    <p class="lead center">Support an independent build and keep every feature, forever.</p>
+  </div>
+  <div class="tiers">
+    <div class="tier glass">
+      <div class="tag">Monthly</div>
+      <div class="price">$3.99</div>
+      <div class="per">per month</div>
+      <p class="desc">Try it season-round with the freedom to cancel anytime.</p>
+      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Choose monthly</a>
+    </div>
+    <div class="tier glass best">
+      <div class="badge">Best value</div>
+      <div class="tag">Yearly</div>
+      <div class="price">$27.99</div>
+      <div class="per">per year</div>
+      <p class="desc">A full season of every session, standings and ratings — about $2.33 a month.</p>
+      <a class="btn btn-primary" href="#get" style="margin-top:6px">Choose yearly</a>
+    </div>
+    <div class="tier glass">
+      <div class="tag">Lifetime</div>
+      <div class="price">$69.99</div>
+      <div class="per">one time</div>
+      <p class="desc">Pay once, own it for good — every season and every update to come.</p>
+      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Go lifetime</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="center" style="max-width:640px">
+    <div class="eyebrow">Good to know</div>
+    <h2>Questions, answered.</h2>
+  </div>
+  <div class="faq">
+    <div class="qa glass"><h4>Is FlatOut official?</h4><p>No. FlatOut is an independent, unofficial companion made by fans. It is not affiliated with, endorsed by, or associated with Formula 1 or the FIA.</p></div>
+    <div class="qa glass"><h4>Does the spoiler-free mode really work?</h4><p>Yes — that's the whole point. One switch hides results, times and standings across the entire app, and reminders are written to never reveal the outcome.</p></div>
+    <div class="qa glass"><h4>What platforms is it on?</h4><p>iOS first, with Android to follow. Home-screen widgets are included on iOS.</p></div>
+    <div class="qa glass"><h4>Where does the data come from?</h4><p>Session times, standings and results are sourced from established motorsport data providers, refreshed throughout each weekend.</p></div>
+  </div>
+</section>
+</div>
+
+<div class="wrap">
+<footer>
+  <div class="foot-top">
+    <a class="foot-brand" href="#top"><img src="assets/icon.png" alt="">FlatOut · Race Hub</a>
+    <div class="foot-links">
+      <a href="https://flatoutapp.app/privacy/">Privacy</a>
+      <a href="mailto:support@flatoutapp.app">Support</a>
+      <a href="#features">Features</a>
+    </div>
+  </div>
+  <p class="disc">FlatOut is an independent, unofficial application and is not affiliated with, endorsed by, or associated with Formula 1, Formula One Licensing B.V., Formula One World Championship Limited, or the Fédération Internationale de l'Automobile (FIA). F1, FORMULA 1, FIA, GRAND PRIX and related marks are trademarks of their respective owners. All timing and results data is provided "as is" for informational purposes.</p>
+  <p class="copyr">© <span id="yr">2026</span> NEO Media Productions Inc · Made in Meridian, Idaho</p>
+</footer>
+</div>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
 </body>
 </html>
