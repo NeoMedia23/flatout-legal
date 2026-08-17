@@ -93,6 +93,18 @@
   .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
   .cta .btn{padding:15px 26px;font-size:15px}
   .store-note{margin-top:16px;font-size:12.5px;color:var(--dim-2);letter-spacing:.04em}
+  /* Waitlist signup */
+  .signup{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:stretch}
+  .signup input{font:400 15px/1 var(--sans);color:var(--text);background:var(--glass-2);
+    border:1px solid var(--brd);border-radius:14px;padding:15px 18px;min-width:240px;outline:none;
+    transition:border-color .2s,box-shadow .2s}
+  .signup input::placeholder{color:var(--dim-2)}
+  .signup input:focus{border-color:var(--red-hi);box-shadow:0 0 0 3px rgba(255,47,82,.18)}
+  .signup .btn{padding:15px 26px;font-size:15px}
+  .signup .btn[disabled]{opacity:.6;pointer-events:none}
+  .signup-msg{margin-top:14px;font-size:14px;font-weight:600;min-height:20px}
+  .signup-msg.ok{color:#38d39f}
+  .signup-msg.err{color:var(--red-hi)}
 
   /* ── section scaffolding ─────────────────────────────────────── */
   section{padding-block:70px;position:relative}
@@ -199,7 +211,7 @@
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-primary" href="mailto:support@flatoutapp.app?subject=Notify%20me%20when%20FlatOut%20launches">Notify me</a>
+    <a class="btn btn-primary" href="#get">Notify me</a>
   </div>
 </header>
 </div>
@@ -212,9 +224,13 @@
   <h1>As informed as the drivers <span class="grad">on track.</span></h1>
   <p class="sub">FlatOut is your pit wall for every Grand Prix — every session in your time zone, live standings, hand-drawn circuit maps and weekend ratings. All the data the paddock runs on, with a spoiler shield that actually holds.</p>
   <div class="cta" id="get">
-    <a class="btn btn-primary" href="mailto:support@flatoutapp.app?subject=Notify%20me%20when%20FlatOut%20launches">Notify me at launch</a>
+    <form class="signup" id="signup" novalidate>
+      <input type="email" id="signup-email" placeholder="you@email.com" autocomplete="email" aria-label="Email address" required>
+      <button type="submit" class="btn btn-primary" id="signup-btn">Notify me at launch</button>
+    </form>
     <a class="btn btn-ghost" href="#features">Explore features</a>
   </div>
+  <p class="signup-msg" id="signup-msg" role="status" aria-live="polite"></p>
   <p class="store-note">Coming soon to the App Store · iOS first, Android to follow</p>
 </section>
 </div>
@@ -379,5 +395,40 @@
 </div>
 
 <script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+<script>
+/* Waitlist signup → Supabase Edge Function (which saves to SheetDB + sends the
+   Resend welcome email). The publishable key is safe to expose. */
+(function(){
+  var ENDPOINT = 'https://jddhzimesonjzfjwxxly.supabase.co/functions/v1/waitlist';
+  var ANON = 'sb_publishable_cA-xlInvKbDyEM8OIAuBrw_bRNKreVv';
+  var form = document.getElementById('signup');
+  var input = document.getElementById('signup-email');
+  var btn = document.getElementById('signup-btn');
+  var msg = document.getElementById('signup-msg');
+  if(!form) return;
+  function show(text, ok){ msg.textContent = text; msg.className = 'signup-msg ' + (ok ? 'ok' : 'err'); }
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = (input.value || '').trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ show('Please enter a valid email address.', false); return; }
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Joining…'; msg.textContent = '';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey': ANON, 'Authorization': 'Bearer ' + ANON },
+      body: JSON.stringify({ email: email })
+    }).then(function(r){
+      return r.text().then(function(t){ var d={}; try{ d=JSON.parse(t); }catch(_){} return { ok:r.ok, d:d }; });
+    }).then(function(res){
+      if(res.ok){ show("🏁 You're in the FlatOut Club! Check your inbox — we'll reach out the moment the app is live.", true); form.reset(); }
+      else { show((res.d && res.d.error) || 'Something went wrong — please try again.', false); }
+    }).catch(function(){
+      show('Network error — please try again.', false);
+    }).then(function(){
+      btn.disabled = false; btn.textContent = label;
+    });
+  });
+})();
+</script>
 </body>
 </html>
