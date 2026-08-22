@@ -31,75 +31,94 @@
 
   <p>
     FlatOut is an independent, unofficial Formula 1 companion app published by
-    Neo Media Productions Inc. (&ldquo;we,&rdquo; &ldquo;us&rdquo;). We built FlatOut to be private by
-    default. This policy explains, in plain language, what the app does and does not do with your data.
+    Neo Media Productions Inc. (&ldquo;we,&rdquo; &ldquo;us&rdquo;). We collect the minimum needed to run your
+    account and the features you choose to use. We do <strong>not</strong> sell your data, show ads, or track you
+    across other apps or websites. This policy explains, in plain language, what we collect and why.
   </p>
 
   <h2>The short version</h2>
   <ul>
-    <li>FlatOut has <strong>no user accounts and no login</strong>. We don&rsquo;t ask for your name, email, or any personal details.</li>
-    <li>FlatOut has <strong>no servers or database of our own</strong>. Your settings live only on your device.</li>
-    <li>We do <strong>not collect analytics</strong>, and version 1 of the app shows <strong>no ads and performs no advertising tracking</strong>.</li>
+    <li>FlatOut uses an <strong>account</strong> (email + password) so your settings, favorites, and ratings follow you across devices.</li>
+    <li>Your account data is stored on our backend provider, <strong>Supabase</strong>. We don&rsquo;t sell it or share it with advertisers.</li>
+    <li>We run <strong>no third-party analytics</strong>, show <strong>no ads</strong>, and do <strong>no advertising tracking</strong>.</li>
+    <li>You can <strong>delete your account and all its data</strong> at any time, right inside the app.</li>
   </ul>
 
-  <h2>Information stored on your device</h2>
+  <h2>Information we collect</h2>
+  <ul>
+    <li><strong>Account:</strong> your email address and a password, used to sign you in. Passwords are handled by our
+      authentication provider and stored only in a securely hashed form &mdash; we never see or store your plain password.</li>
+    <li><strong>Profile &amp; preferences:</strong> your favorite driver and team, spoiler-free setting, units, and time-zone/city,
+      plus &mdash; if you choose to set them &mdash; a public username (@handle), display name, and profile photo. These are saved to
+      your account so they sync across your devices.</li>
+    <li><strong>Ratings &amp; reviews:</strong> if you rate a race weekend or write a review, that content &mdash; shown alongside
+      your @handle and profile photo &mdash; is stored and is <strong>visible to other FlatOut users</strong>. Don&rsquo;t include
+      anything in a review you wouldn&rsquo;t want to be public.</li>
+    <li><strong>Subscription status:</strong> whether you have an active FlatOut Pro subscription.</li>
+    <li><strong>On your device:</strong> some of the above preferences are also cached locally so the app works quickly and offline.</li>
+  </ul>
+
+  <h2>Where your data lives</h2>
   <p>
-    The app saves a few preferences locally on your device (using the operating system&rsquo;s standard on-device
-    storage) so it can remember your choices between launches: your spoiler-free setting, temperature unit,
-    time-zone/city selection, and whether you have an active FlatOut Pro subscription. This information stays on
-    your device and is not transmitted to us.
+    We use <strong>Supabase</strong> (a hosted database, authentication, file storage, and serverless-function platform) as our
+    backend. Your account, profile, ratings, and any profile photo are stored there on our behalf; Supabase acts as our data
+    processor. See <a href="https://supabase.com/privacy">Supabase&rsquo;s privacy policy</a>.
   </p>
 
-  <h2>Information sent to third parties</h2>
-  <p>To show live standings, results, schedules, weather, and news, the app requests data from third-party services. These requests are made directly from your device:</p>
-  <ul>
-    <li><strong>Jolpica F1 API</strong> and <strong>OpenF1</strong> — Formula 1 schedule, results, standings, and statistics.</li>
-    <li><strong>Open-Meteo</strong> — weather forecasts for circuit locations.</li>
-    <li><strong>News publishers</strong> (The Race, RaceFans, Autosport, Motorsport.com, Formula1.com) — headlines are fetched from their public feeds; tapping an article opens it on the publisher&rsquo;s own site.</li>
-  </ul>
+  <h2>Sports data, weather &amp; news</h2>
   <p>
-    As with any internet request, these providers may automatically log technical information such as your IP
-    address and device/browser type in their own server logs. We do not control those logs and do not receive
-    that information. We do not send any personal information to these services.
+    To show live timing, results, standings, schedules, weather, and news, the app relies on third-party data providers. Most of
+    this information is requested through <strong>our own backend</strong> rather than from your device; some feeds (such as weather
+    and news headlines) are requested by the app directly, and tapping a news headline opens the article on the publisher&rsquo;s own
+    website. We do <strong>not</strong> send your personal information to any of these providers. As with any internet request, a
+    provider whose feed the app requests directly may log technical information such as an IP address in its own server logs, which
+    we do not control.
   </p>
 
   <h2>Purchases</h2>
   <p>
-    FlatOut Pro is sold through Apple&rsquo;s In-App Purchase system. Payments are handled entirely by Apple; we
-    never see or store your payment details. We use RevenueCat to manage subscription status. RevenueCat receives
-    an anonymous, app-generated identifier and your subscription state so the app can unlock Pro features and
-    restore purchases — it does not receive your name or payment information. See
-    <a href="https://www.revenuecat.com/privacy/">RevenueCat&rsquo;s privacy policy</a> and
-    <a href="https://www.apple.com/legal/privacy/">Apple&rsquo;s privacy policy</a> for details.
+    FlatOut Pro is sold through Apple&rsquo;s In-App Purchase system. Payments are handled entirely by Apple; we never see or store
+    your payment details. We use <strong>RevenueCat</strong> to manage subscription status &mdash; it receives an app-generated
+    identifier and your subscription state so the app can unlock Pro features and restore purchases, and does not receive your
+    payment information. See <a href="https://www.revenuecat.com/privacy/">RevenueCat&rsquo;s privacy policy</a> and
+    <a href="https://www.apple.com/legal/privacy/">Apple&rsquo;s privacy policy</a>.
   </p>
 
-  <h2>Advertising</h2>
+  <h2>How we use your information</h2>
   <p>
-    Version 1 of FlatOut contains no advertising and does no ad tracking. If a future version introduces ads, we
-    will update this policy first, request your permission through Apple&rsquo;s App Tracking Transparency prompt
-    before any tracking occurs, and describe exactly what changes.
+    We use your data only to provide the app: to sign you in, sync your settings and favorites, store and display your ratings and
+    reviews, and unlock Pro features. We do not use your data for advertising, and we do not sell or rent it to anyone.
+  </p>
+
+  <h2>Analytics &amp; advertising</h2>
+  <p>
+    FlatOut uses no third-party analytics SDKs, contains no advertising, and performs no ad tracking. If a future version introduces
+    any of these, we will update this policy first and, where required, request your permission through Apple&rsquo;s App Tracking
+    Transparency prompt before any tracking occurs.
+  </p>
+
+  <h2>Keeping your data &amp; deleting it</h2>
+  <p>
+    You can <strong>delete your account at any time</strong> in the app (Profile &rarr; Delete account). This permanently removes your
+    account, profile, favorites, and ratings from our backend. We keep your data only while your account exists (subscription records
+    required for Apple/tax purposes may persist as required by law). Deleting the app removes locally cached preferences, and you can
+    manage or cancel a subscription anytime in your Apple ID / App Store settings.
   </p>
 
   <h2>Children</h2>
   <p>
-    FlatOut is not directed to children under 13 and does not knowingly collect personal information from anyone.
-  </p>
-
-  <h2>Your choices</h2>
-  <p>
-    Because your data lives only on your device, deleting the app removes all locally stored preferences. You can
-    manage or cancel a subscription anytime in your Apple ID / App Store settings.
+    FlatOut is not directed to children under 13 and we do not knowingly collect personal information from them.
   </p>
 
   <h2>Changes to this policy</h2>
   <p>
-    We may update this policy as the app evolves. Material changes will be reflected here with a new
-    &ldquo;last updated&rdquo; date.
+    We may update this policy as the app evolves. Material changes will be reflected here with a new &ldquo;last updated&rdquo; date.
   </p>
 
   <h2>Contact</h2>
   <p>
-    Questions? Email <a href="mailto:support@flatoutapp.app">support@flatoutapp.app</a>.
+    Questions, or want a copy of or the deletion of your data? Email
+    <a href="mailto:support@flatoutapp.app">support@flatoutapp.app</a>.
   </p>
 
   <p class="note">
