@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Reset your password · FlatOut</title>
+<style>
+  :root{ --bg:#0B0D12; --ink:#f4f1f5; --dim:#9aa0aa; --accent:#E8002D; --line:#262a32; }
+  *{box-sizing:border-box} html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:grid;place-items:center;padding:24px;text-align:center;-webkit-font-smoothing:antialiased}
+  .card{max-width:420px;width:100%}
+  .logo{font-weight:800;font-size:30px;letter-spacing:.02em;margin-bottom:30px}
+  .logo .dot{color:var(--accent)}
+  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);
+    animation:spin .9s linear infinite;margin:0 auto 20px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  h1{font-size:21px;margin:0 0 10px;font-weight:700}
+  p{color:var(--dim);font-size:15px;line-height:1.5;margin:0 auto 24px;max-width:34ch}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;
+    font-size:16px;padding:15px 32px;border-radius:14px}
+  .hint{margin-top:20px;font-size:12.5px;color:#6b7078}
+  .err{color:#ff6a82;font-weight:600}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Flat<span class="dot">O</span>ut</div>
+    <div id="ok">
+      <div class="spinner"></div>
+      <h1>Opening FlatOut…</h1>
+      <p>Taking you back to the app to choose a new password. If it doesn't open on its own, tap the button below.</p>
+      <a id="open" class="btn" href="#">Open FlatOut</a>
+      <div class="hint">Make sure the FlatOut app is installed on this device.</div>
+    </div>
+    <div id="bad" hidden>
+      <h1>This link didn't work</h1>
+      <p class="err">The reset link is missing or has expired. Open the FlatOut app and request a new password reset.</p>
+    </div>
+  </div>
+<script>
+  (function () {
+    var p = new URLSearchParams(location.search);
+    var th = p.get('token_hash');
+    var type = p.get('type') || 'recovery';
+    if (!th) {
+      document.getElementById('ok').hidden = true;
+      document.getElementById('bad').hidden = false;
+      return;
+    }
+    var deep = 'flatout://auth/reset?token_hash=' + encodeURIComponent(th) + '&type=' + encodeURIComponent(type);
+    document.getElementById('open').setAttribute('href', deep);
+    setTimeout(function () { window.location.href = deep; }, 400);
+  })();
+</script>
+</body>
+</html>
