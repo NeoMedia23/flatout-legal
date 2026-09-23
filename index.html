@@ -93,18 +93,7 @@
   .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
   .cta .btn{padding:15px 26px;font-size:15px}
   .store-note{margin-top:16px;font-size:12.5px;color:var(--dim-2);letter-spacing:.04em}
-  /* Waitlist signup */
-  .signup{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:stretch}
-  .signup input{font:400 15px/1 var(--sans);color:var(--text);background:var(--glass-2);
-    border:1px solid var(--brd);border-radius:14px;padding:15px 18px;min-width:240px;outline:none;
-    transition:border-color .2s,box-shadow .2s}
-  .signup input::placeholder{color:var(--dim-2)}
-  .signup input:focus{border-color:var(--red-hi);box-shadow:0 0 0 3px rgba(255,47,82,.18)}
-  .signup .btn{padding:15px 26px;font-size:15px}
-  .signup .btn[disabled]{opacity:.6;pointer-events:none}
-  .signup-msg{margin-top:14px;font-size:14px;font-weight:600;min-height:20px}
-  .signup-msg.ok{color:#38d39f}
-  .signup-msg.err{color:var(--red-hi)}
+  /* hero App Store CTA */
 
   /* ── section scaffolding ─────────────────────────────────────── */
   section{padding-block:70px;position:relative}
@@ -211,7 +200,7 @@
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-primary" href="#get">Notify me</a>
+    <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener">Get the app</a>
   </div>
 </header>
 </div>
@@ -224,14 +213,10 @@
   <h1>As informed as the drivers <span class="grad">on track.</span></h1>
   <p class="sub">FlatOut is your pit wall for every Grand Prix — every session in your time zone, live standings, hand-drawn circuit maps and weekend ratings. All the data the paddock runs on, with a spoiler shield that actually holds.</p>
   <div class="cta" id="get">
-    <form class="signup" id="signup" novalidate>
-      <input type="email" id="signup-email" placeholder="you@email.com" autocomplete="email" aria-label="Email address" required>
-      <button type="submit" class="btn btn-primary" id="signup-btn">Notify me at launch</button>
-    </form>
+    <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener">Download on the App Store</a>
     <a class="btn btn-ghost" href="#features">Explore features</a>
   </div>
-  <p class="signup-msg" id="signup-msg" role="status" aria-live="polite"></p>
-  <p class="store-note">Coming soon to the App Store · iOS first, Android to follow</p>
+  <p class="store-note">On the App Store now · Android arriving October</p>
 </section>
 </div>
 
@@ -345,7 +330,7 @@
       <div class="price">$4.99</div>
       <div class="per">per month</div>
       <p class="desc">Try it season-round with the freedom to cancel anytime.</p>
-      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Choose monthly</a>
+      <a class="btn btn-ghost" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Choose monthly</a>
     </div>
     <div class="tier glass best">
       <div class="badge">Best value</div>
@@ -353,14 +338,14 @@
       <div class="price">$28.99</div>
       <div class="per">per year</div>
       <p class="desc">A full season of every session, standings and ratings — about $2.42 a month.</p>
-      <a class="btn btn-primary" href="#get" style="margin-top:6px">Choose yearly</a>
+      <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Choose yearly</a>
     </div>
     <div class="tier glass">
       <div class="tag">Lifetime</div>
       <div class="price">$69.99</div>
       <div class="per">one time</div>
       <p class="desc">Pay once, own it for good — every season and every update to come.</p>
-      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Go lifetime</a>
+      <a class="btn btn-ghost" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Go lifetime</a>
     </div>
   </div>
 </section>
@@ -373,7 +358,7 @@
   <div class="faq">
     <div class="qa glass"><h4>Is FlatOut official?</h4><p>No. FlatOut is an independent, unofficial companion made by fans. It is not affiliated with, endorsed by, or associated with Formula 1, the FIA, Formula One Management, or any team or driver.</p></div>
     <div class="qa glass"><h4>Does the spoiler-free mode really work?</h4><p>Yes — that's the whole point. One switch hides results, times and standings across the entire app, and reminders are written to never reveal the outcome.</p></div>
-    <div class="qa glass"><h4>What platforms is it on?</h4><p>iOS first, with Android to follow. Home-screen widgets are included on iOS.</p></div>
+    <div class="qa glass"><h4>What platforms is it on?</h4><p>On iOS now — download it from the App Store. Android is arriving in October. Home-screen widgets are included on iOS.</p></div>
     <div class="qa glass"><h4>Where does the data come from?</h4><p>Session times, standings and results are sourced from established motorsport data providers, refreshed throughout each weekend.</p></div>
   </div>
 </section>
@@ -395,40 +380,5 @@
 </div>
 
 <script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
-<script>
-/* Waitlist signup → Supabase Edge Function (which saves to SheetDB + sends the
-   Resend welcome email). The publishable key is safe to expose. */
-(function(){
-  var ENDPOINT = 'https://jddhzimesonjzfjwxxly.supabase.co/functions/v1/waitlist';
-  var ANON = 'sb_publishable_cA-xlInvKbDyEM8OIAuBrw_bRNKreVv';
-  var form = document.getElementById('signup');
-  var input = document.getElementById('signup-email');
-  var btn = document.getElementById('signup-btn');
-  var msg = document.getElementById('signup-msg');
-  if(!form) return;
-  function show(text, ok){ msg.textContent = text; msg.className = 'signup-msg ' + (ok ? 'ok' : 'err'); }
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var email = (input.value || '').trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ show('Please enter a valid email address.', false); return; }
-    var label = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Joining…'; msg.textContent = '';
-    fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'apikey': ANON, 'Authorization': 'Bearer ' + ANON },
-      body: JSON.stringify({ email: email })
-    }).then(function(r){
-      return r.text().then(function(t){ var d={}; try{ d=JSON.parse(t); }catch(_){} return { ok:r.ok, d:d }; });
-    }).then(function(res){
-      if(res.ok){ show("🏁 You're in the FlatOut Club! Check your inbox — we'll reach out the moment the app is live.", true); form.reset(); }
-      else { show((res.d && res.d.error) || 'Something went wrong — please try again.', false); }
-    }).catch(function(){
-      show('Network error — please try again.', false);
-    }).then(function(){
-      btn.disabled = false; btn.textContent = label;
-    });
-  });
-})();
-</script>
 </body>
 </html>
