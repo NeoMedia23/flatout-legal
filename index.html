@@ -93,6 +93,17 @@
   .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
   .cta .btn{padding:15px 26px;font-size:15px}
   .store-note{margin-top:16px;font-size:12.5px;color:var(--dim-2);letter-spacing:.04em}
+  /* live "next session" countdown chip */
+  .live-next{display:flex;align-items:center;gap:13px;width:max-content;max-width:92vw;margin:26px auto 0;
+    padding:11px 20px 11px 16px;border-radius:100px;text-align:left;
+    transition:transform .2s,box-shadow .2s,border-color .2s}
+  .live-next:hover{transform:translateY(-2px);border-color:var(--brd-hi);box-shadow:var(--shadow),0 0 30px rgba(232,0,45,.25)}
+  .live-next[hidden]{display:none}
+  .ln-dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:pulse 2.4s infinite}
+  .ln-txt{display:flex;flex-direction:column;gap:2px;line-height:1.15}
+  .ln-label{font-family:var(--disp);font-weight:600;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .ln-body{font-family:var(--disp);font-weight:600;font-size:14.5px;color:var(--text)}
+  .ln-body b{color:var(--red-hi);font-variant-numeric:tabular-nums}
   /* hero App Store CTA */
 
   /* ── section scaffolding ─────────────────────────────────────── */
@@ -248,7 +259,7 @@
 
   @media(prefers-reduced-motion:reduce){
     .reveal{opacity:1;transform:none;transition:none}
-    body::before,body::after,h1 .grad,.hero-word,.pill .dot{animation:none}
+    body::before,body::after,h1 .grad,.hero-word,.pill .dot,.ln-dot{animation:none}
     .btn-primary:hover::after{animation:none}
   }
 </style>
@@ -277,6 +288,13 @@
   <p class="hero-tag">Zero spoilers. All the stats. For true F1 fans.</p>
   <h1>As informed as the drivers <span class="grad">on track.</span></h1>
   <p class="sub">FlatOut is your pit wall for every Grand Prix — every session in your time zone, live standings, hand-drawn circuit maps and weekend ratings. All the data the paddock runs on, with a spoiler shield that actually holds.</p>
+  <a class="live-next glass" id="liveNext" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" hidden>
+    <span class="ln-dot"></span>
+    <span class="ln-txt">
+      <span class="ln-label">Next session</span>
+      <span class="ln-body" id="lnBody"></span>
+    </span>
+  </a>
   <div class="cta" id="get">
     <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener">Download on the App Store</a>
     <a class="btn btn-ghost" href="#features">Explore features</a>
@@ -493,6 +511,40 @@
     var sync = function(){ demo.setAttribute('data-sealed', t.checked?'true':'false'); if(txt) txt.textContent = t.checked?'Shield on':'Shield off'; };
     t.addEventListener('change', sync); sync();
   }
+})();
+</script>
+<script>
+/* Live "next session" countdown — data from our own backend (next-race function),
+   which reads the same shared motorsport data source the app uses. Times are UTC;
+   the countdown is a duration so it's correct in every visitor's time zone. Fails
+   silently (chip stays hidden) if the endpoint is unreachable. */
+(function(){
+  var el = document.getElementById('liveNext'); if(!el) return;
+  var bodyEl = document.getElementById('lnBody');
+  var ENDPOINT = 'https://jddhzimesonjzfjwxxly.supabase.co/functions/v1/next-race';
+  var sessions = null, race = '';
+  function shortRace(n){ return (n||'').replace(/\s*Grand Prix$/,' GP'); }
+  function fmt(ms){
+    var s = Math.max(0, Math.floor(ms/1000));
+    var d = Math.floor(s/86400); s -= d*86400;
+    var h = Math.floor(s/3600); s -= h*3600;
+    var m = Math.floor(s/60); s -= m*60;
+    var p = function(n){ return (n<10?'0':'')+n; };
+    return (d>0 ? d+'d ' : '') + p(h)+':'+p(m)+':'+p(s);
+  }
+  function tick(){
+    if(!sessions) return;
+    var now = Date.now(), next = null;
+    for(var i=0;i<sessions.length;i++){ if(new Date(sessions[i].iso).getTime() > now){ next = sessions[i]; break; } }
+    if(!next){ el.hidden = true; return; }
+    bodyEl.innerHTML = shortRace(race) + ' · ' + next.label + ' — <b>' + fmt(new Date(next.iso).getTime()-now) + '</b>';
+    el.hidden = false;
+  }
+  fetch(ENDPOINT).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if(!d || !d.sessions || !d.sessions.length) return;
+    sessions = d.sessions; race = d.raceName || d.locality || '';
+    tick(); setInterval(tick, 1000);
+  }).catch(function(){ /* stay hidden on failure */ });
 })();
 </script>
 </body>
