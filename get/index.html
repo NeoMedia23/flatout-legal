@@ -89,12 +89,20 @@
 (function(){
   var ua = navigator.userAgent || "";
   if(/android/i.test(ua)) document.body.setAttribute('data-os','android');
-  // If the ad link carries a campaign tag, forward it to Apple's App Analytics (?ct=)
+  // Attribute the install in App Store Connect (Analytics -> Acquisition -> Campaigns)
+  // via Apple's campaign token (ct). Built from the ad link's ?ct= or its UTM params,
+  // with a default so every /get visit is tagged. No third-party web analytics by design.
   try{
     var q = new URLSearchParams(location.search);
-    var ct = q.get('ct') || q.get('utm_campaign') || q.get('utm_source');
-    if(ct){ var a = document.getElementById('cta'); var u = new URL(a.href);
-      u.searchParams.set('ct', String(ct).slice(0,40)); a.href = u.toString(); }
+    var src  = (q.get('utm_source')   || '').trim();
+    var camp = (q.get('utm_campaign') || '').trim();
+    var ct = q.get('ct') || [src, camp].filter(Boolean).join('_') || 'flatoutapp_get';
+    ct = ct.toLowerCase().replace(/[^a-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,40) || 'flatoutapp_get';
+    var a = document.getElementById('cta');
+    var u = new URL(a.href);
+    u.searchParams.set('ct', ct);
+    var pt = q.get('pt'); if(pt) u.searchParams.set('pt', String(pt).slice(0,40)); // optional provider token
+    a.href = u.toString();
   }catch(e){}
 })();
 </script>
