@@ -93,6 +93,10 @@
   .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
   .cta .btn{padding:15px 26px;font-size:15px}
   .store-note{margin-top:16px;font-size:12.5px;color:var(--dim-2);letter-spacing:.04em}
+  .stores{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;flex-basis:100%}
+  .stores a{display:inline-flex;border-radius:12px;transition:transform .18s,opacity .18s}
+  .stores a:hover,.stores a:focus-visible{transform:translateY(-2px);opacity:.9;outline:none}
+  .stores img{display:block;height:52px;width:auto}
   /* live "next session" countdown chip */
   .live-next{display:flex;align-items:center;gap:13px;width:max-content;max-width:92vw;margin:26px auto 0;
     padding:11px 20px 11px 16px;border-radius:100px;text-align:left;
@@ -276,7 +280,7 @@
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener">Get the app</a>
+    <a class="btn btn-primary" href="#get">Get the app</a>
   </div>
 </header>
 </div>
@@ -296,10 +300,13 @@
     </span>
   </a>
   <div class="cta" id="get">
-    <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener">Download on the App Store</a>
+    <div class="stores">
+      <a href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" aria-label="Download on the App Store"><img src="assets/appstore-badge.svg" alt="Download on the App Store" height="52"></a>
+      <a href="https://play.google.com/store/apps/details?id=com.flatout.app" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="assets/googleplay-badge.png" alt="Get it on Google Play" height="52"></a>
+    </div>
     <a class="btn btn-ghost" href="#features">Explore features</a>
   </div>
-  <p class="store-note">On the App Store now · Android arriving October</p>
+  <p class="store-note">Now free on the App Store and Google Play</p>
 </section>
 </div>
 
@@ -427,7 +434,7 @@
       <div class="price">$4.99</div>
       <div class="per">per month</div>
       <p class="desc">Try it season-round with the freedom to cancel anytime.</p>
-      <a class="btn btn-ghost" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Choose monthly</a>
+      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Choose monthly</a>
     </div>
     <div class="tier glass best">
       <div class="badge">Best value</div>
@@ -435,14 +442,14 @@
       <div class="price">$28.99</div>
       <div class="per">per year</div>
       <p class="desc">A full season of every session, standings and ratings — about $2.42 a month.</p>
-      <a class="btn btn-primary" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Choose yearly</a>
+      <a class="btn btn-primary" href="#get" style="margin-top:6px">Choose yearly</a>
     </div>
     <div class="tier glass">
       <div class="tag">Lifetime</div>
       <div class="price">$69.99</div>
       <div class="per">one time</div>
       <p class="desc">Pay once, own it for good — every season and every update to come.</p>
-      <a class="btn btn-ghost" href="https://apps.apple.com/app/id6802510938" target="_blank" rel="noopener" style="margin-top:6px">Go lifetime</a>
+      <a class="btn btn-ghost" href="#get" style="margin-top:6px">Go lifetime</a>
     </div>
   </div>
 </section>
@@ -455,7 +462,7 @@
   <div class="faq">
     <div class="qa glass"><h4>Is FlatOut official?</h4><p>No. FlatOut is an independent, unofficial companion made by fans. It is not affiliated with, endorsed by, or associated with Formula 1, the FIA, Formula One Management, or any team or driver.</p></div>
     <div class="qa glass"><h4>Does the spoiler-free mode really work?</h4><p>Yes — that's the whole point. One switch hides results, times and standings across the entire app, and reminders are written to never reveal the outcome.</p></div>
-    <div class="qa glass"><h4>What platforms is it on?</h4><p>On iOS now — download it from the App Store. Android is arriving in October. Home-screen widgets are included on iOS.</p></div>
+    <div class="qa glass"><h4>What platforms is it on?</h4><p>On iPhone and Android — grab it from the App Store or Google Play. Home-screen widgets are included on iOS.</p></div>
     <div class="qa glass"><h4>Where does the data come from?</h4><p>Session times, standings and results are sourced from established motorsport data providers, refreshed throughout each weekend.</p></div>
   </div>
 </section>
