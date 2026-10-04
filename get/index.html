@@ -11,7 +11,7 @@
 <link rel="icon" href="../assets/favicon.png?v=2" type="image/png">
 <link rel="apple-touch-icon" href="../assets/icon.png">
 <meta property="og:title" content="Get FlatOut · Race Hub">
-<meta property="og:description" content="The independent Formula 1 companion — download it for iPhone.">
+<meta property="og:description" content="The independent Formula 1 companion — download it for iPhone and Android.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,6 +107,12 @@
     var gp = document.getElementById('gp-cta');
     var gu = new URL(gp.href); gu.searchParams.set('referrer', ref.join('&'));
     gp.href = gu.toString();
+  }catch(e){}
+  // Put the visitor's own store first (Android → Google Play). Both badges stay visible; no redirect.
+  try{
+    if(/android/i.test(navigator.userAgent)){
+      var gpA=document.getElementById('gp-cta'); gpA.parentNode.insertBefore(gpA, gpA.parentNode.firstChild);
+    }
   }catch(e){}
 })();
 </script>
